@@ -11,5 +11,7 @@ export class BinaryTree {
     this.root = null;
   }
 
-  
+  buildTree(array) {
+    const set = new Set(array);
+  }
 }
