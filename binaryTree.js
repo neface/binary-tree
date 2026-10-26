@@ -36,18 +36,7 @@ export class BinaryTree {
   }
 
   includes(value) { 
-    let current = this.root;
-
-    while(current) {
-      if(current.data === value) {
-        return true;
-      } else if (value < current.data) {
-        current = current.left;
-      } else if (value > current.data) {
-        current = current.right;
-      } 
-    }
-    return false;
+    return this.findNode(value) !== null;
   }
   
   insert(value) {
@@ -155,12 +144,13 @@ export class BinaryTree {
       } else {
         cur = cur.right;
       }
+      count++;
     }
 
     return undefined;
   }
 
-  height(value) {
+  findNode(value) {
     let cur = this.root;
     while(cur) {
       if(value === cur.data) {
@@ -171,6 +161,11 @@ export class BinaryTree {
         cur = cur.right;
       }
     }
+    return cur;
+  }
+
+  height(value) {
+    let cur = this.findNode(value);
 
     if(!cur) return undefined;
     return this.heightHelper(cur);
@@ -180,6 +175,62 @@ export class BinaryTree {
     if (!node) return -1;
     const leftHeight = this.heightHelper(node.left);
     const rightHeight = this.heightHelper(node.right);
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  findMinNode(node) {
+    if (!node) return null;
+
+    while (node.left) {
+      node = node.left;
+    }
+    return node;
+  }
+
+  deleteHelper(node, value) {
+    if (!node) return null;
+
+    if (value < node.data) {
+      node.left = this.deleteHelper(node.left, value);
+    } else if (value > node.data) {
+      node.right = this.deleteHelper(node.right, value);
+    } else {
+      if (!node.left) return node.right;
+      if (!node.right) return node.left;
+
+      const successor = this.findMinNode(node.right);
+      node.data = successor.data;
+      node.right = this.deleteHelper(node.right, successor.data);
+    }
+    return node;
+  }
+
+  deleteItem(value) {
+    this.root = this.deleteHelper(this.root, value);
+  }
+  
+  rebalance() {
+    const arr = [];
+    this.inOrderForEach(v => arr.push(v));
+    this.root = this.buildTree(arr);
+  }
+
+  isBalanced() {
+    return this.checkBalance(this.root) !== -2;
+  }
+
+  checkBalance(node) {
+    if (!node) return -1;
+
+    const leftHeight = this.checkBalance(node.left);
+    if (leftHeight === -2) return -2;
+    const rightHeight = this.checkBalance(node.right);
+    if (rightHeight === -2) return -2;
+
+    if (Math.abs(leftHeight - rightHeight) > 1) {
+      return -2;
+    }
+
     return Math.max(leftHeight, rightHeight) + 1;
   }
 }
