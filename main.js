@@ -1,4 +1,4 @@
-import { BinaryTree } from "./binary-tree.js";
+import { BinaryTree } from "./binaryTree.js";
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
   if (node === null || node === undefined) {
@@ -9,3 +9,7 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
   console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
   prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
 }
+
+const tree = new BinaryTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+tree.levelOrderForEach(v => console.log(v));
+prettyPrint(tree.root);
